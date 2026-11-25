@@ -74,6 +74,14 @@ MAX_CHARS = 200
 LINE = "Error E04: No hot water. I heated it. You used it all. This is not a malfunction."
 
 
+# Pass 3 revision (thinking_revised fix): the single-line check was split
+# out of check_gate into the _is_single_line helper; behaviour and the
+# output line are unchanged.
+def _is_single_line(text):
+    """True when the text contains no line breaks (gate rule)."""
+    return "\n" not in text and "\r" not in text
+
+
 def check_gate(text):
     """Mirror the sealed gate: UTF-8 text of 1 to 200 characters, not only whitespace, one line."""
     if not isinstance(text, str):
@@ -82,7 +90,7 @@ def check_gate(text):
         return False
     if not text.strip():
         return False
-    if "\n" in text or "\r" in text:
+    if not _is_single_line(text):
         return False
     return True
 
